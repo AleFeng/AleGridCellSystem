@@ -785,10 +785,9 @@ namespace AleGridCellSystem
                 //GameObject gridItemGObj = PrefabUtility.LoadPrefabContents(m_CreateGridItemPrefabPaths[i]); 
                 //GameObject prefabGObj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                 GameObject prefabGObj = m_CreateGridItemPrefabDic[item.Value];
-                GameObject gridItemGObj = GameObject.Instantiate(prefabGObj);
-                gridItemGObj.transform.SetParent(PreformedUnitTs);
-                PrefabUtility.ConnectGameObjectToPrefab(gridItemGObj, prefabGObj);
-                PreformedUnitTs.GetChild(PreformedUnitTs.childCount - 1).name = item.Key;
+                //以连接预制体实例的方式实例化子网格物品（替代已弃用的 ConnectGameObjectToPrefab）
+                GameObject gridItemGObj = (GameObject)PrefabUtility.InstantiatePrefab(prefabGObj, PreformedUnitTs);
+                gridItemGObj.name = item.Key;
             }
 
             bool succeed = GridSystemEditorLibrary.SetPreformedUnitPrefab(m_GridItemDataDic_CreatePrefab, PreformedUnitTs);
