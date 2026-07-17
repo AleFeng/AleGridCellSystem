@@ -16,7 +16,7 @@
     "name": "AleFeng",
     "url": "https://github.com/AleFeng"
   },
-  "license": "GPL-2.0",
+  "license": "MIT",
   "documentationUrl": "https://github.com/AleFeng/AleGridCellSystem",
   "changelogUrl": "https://github.com/AleFeng/AleGridCellSystem/blob/main/Assets/PluginsDeveloper/AleGridCellSystem/CHANGELOG.md"
 }

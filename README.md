@@ -1,7 +1,7 @@
 <p align="center">
   <img alt="GitHub Release" src="https://img.shields.io/github/v/release/AleFeng/AleGridCellSystem?color=blue">
   <img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/AleFeng/AleGridCellSystem/total?color=green">
-  <img alt="GitHub Repo License" src="https://img.shields.io/badge/license-GPL--2.0-blueviolet">
+  <img alt="GitHub Repo License" src="https://img.shields.io/badge/license-MIT-blueviolet">
   <img alt="GitHub Repo Issues" src="https://img.shields.io/github/issues/AleFeng/AleGridCellSystem?color=yellow">
 </p>
 
@@ -321,4 +321,4 @@ Assets/PluginsDeveloper/AleGridCellSystem/
   - 补充演示场景（Samples）与截图 / GIF 说明。
 
 ## 📄 许可证
-本项目基于 [GNU GPL v2.0](./LICENSE) 许可证发布。
+本项目基于 [MIT](./LICENSE) 许可证发布。
