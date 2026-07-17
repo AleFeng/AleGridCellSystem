@@ -472,23 +472,6 @@ namespace AleGridCellSystem
         #endregion
 
         /// <summary>
-        /// 排序信息
-        /// </summary>
-        public GridItemSortInfo SortInfo
-        {
-            get
-            {
-                m_SortInfo.ViewRootTrans = ViewRootTrans; //渲染物体 根节点
-                GetRealVolumeCur(out RealVolume outRealVolume);//真实体力数据
-                m_SortInfo.GridCoordFloat = new GridCoordFloat(MainGridCoord) + outRealVolume.BoundingBoxLocalLocation; //网格项目世界坐标+真实体积的本地坐标
-                m_SortInfo.GridItemSize = outRealVolume.BoundingBoxSize; //真实体积尺寸
-
-                return m_SortInfo;
-            }
-        }
-        private GridItemSortInfo m_SortInfo = new GridItemSortInfo();
-
-        /// <summary>
         /// 显示物体的Transform
         /// </summary>
         public Transform ViewRootTrans

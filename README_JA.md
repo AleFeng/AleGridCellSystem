@@ -93,7 +93,7 @@ https://github.com/AleFeng/AleGridCellSystem.git?path=/Assets/PluginsDeveloper/A
 "com.alefeng.alegridcellsystem": "https://github.com/AleFeng/AleGridCellSystem.git?path=/Assets/PluginsDeveloper/AleGridCellSystem"
 ```
 
-> バージョンを固定する場合は、URL の末尾にタグ / ブランチ名を付けます（例：`...AleGridCellSystem#1.0.0`）。
+> バージョンを固定する場合は、URL の末尾にタグ / ブランチ名を付けます（例：`...AleGridCellSystem#1.1.0`）。
 
 ### 手動インストール
 1. 本リポジトリをダウンロードまたはクローンします。
@@ -166,7 +166,7 @@ grid.RemoveMainGridItemData(0, new GridCoord(3, 4, 0));
 | `SetMainGridItemValue(layer, gridItemData)` | 主セルの値を設定し、占有サイズに応じて子セルを敷き詰めます。 |
 | `PopMainGridItemValue(layer, gridCoord)` | 主セルを取り出して削除（データのコピーを返す）。 |
 | `RemoveMainGridItemData(layer, gridCoord)` | 主セルとそのすべての子セルを削除。 |
-| `CheckGridItemSizeHasGirdItem(layer, gridCoord, gridItemSize)` | 指定サイズの範囲内にすでにアイテムがあるか検査。 |
+| `CheckGridItemSizeHasGridItem(layer, gridCoord, gridItemSize)` | 指定サイズの範囲内にすでにアイテムがあるか検査。 |
 
 > アイテムは `GridItemSize` 範囲内のすべてのセルを占有し、そのうち 1 つが**主セル**（完全なデータを保持）、残りが**子セル**（主セルを指す）です。これにより「複数セルの家具 / 建築」などを正しく配置・問い合わせ・一括削除できます。
 

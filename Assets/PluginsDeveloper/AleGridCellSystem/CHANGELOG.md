@@ -2,6 +2,18 @@
 本项目所有值得注意的变更都会记录在此文件中。
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.1.0] - 2026-07-17
+### 修复（Fixed）
+- 数值解析统一改用 `InvariantCulture`：修复在小数分隔符为逗号的系统区域（如德 / 法 / 俄语环境）下 Aseprite 数据导入解析出错的问题（`GridSystemEditorLibrary`）。
+- `GridCellSystemManager` 坐标校验补充 `layer < 0` 保护，避免负层索引抛 `IndexOutOfRange`。
+- 组装件生成改用 `PrefabUtility.InstantiatePrefab`，替代 Unity 6 已弃用的 `ConnectGameObjectToPrefab`（消除 CS0618 警告，并生成正确的嵌套预制体实例）。
+
+### 变更（Changed）
+- 更正公共方法拼写 `CheckGridItemSizeHasGirdItem` → `CheckGridItemSizeHasGridItem`；旧名保留为 `[Obsolete]` 转发别名（暂不影响现有调用）。
+
+### 移除（Removed）
+- ⚠️ **破坏性**：移除已弃用的旧场景渲染排序方案 —— `GridItemSortInfo` 类、`GridCellSystemManager` 的 `AddGridItemSortInfo` / `RemoveGridItemSortInfo` / `ClearAllViewSortGridItem`、`GridItemComponent.SortInfo`、`GridCoordFloat.Magnitude`。若外部代码引用了这些成员，请改用自有的渲染排序逻辑。
+
 ## [1.0.0] - 2026-07-17
 首个 UPM 版本。
 

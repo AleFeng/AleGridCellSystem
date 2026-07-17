@@ -93,7 +93,7 @@ Or add it directly to the `dependencies` of your project's `Packages/manifest.js
 "com.alefeng.alegridcellsystem": "https://github.com/AleFeng/AleGridCellSystem.git?path=/Assets/PluginsDeveloper/AleGridCellSystem"
 ```
 
-> To pin a version, append a tag/branch name to the URL, e.g. `...AleGridCellSystem#1.0.0`.
+> To pin a version, append a tag/branch name to the URL, e.g. `...AleGridCellSystem#1.1.0`.
 
 ### Manual install
 1. Download or clone this repository.
@@ -166,7 +166,7 @@ grid.RemoveMainGridItemData(0, new GridCoord(3, 4, 0));
 | `SetMainGridItemValue(layer, gridItemData)` | Set the main cell's value and lay out sub cells per the footprint. |
 | `PopMainGridItemValue(layer, gridCoord)` | Pop and remove the main cell (returns a copy of its data). |
 | `RemoveMainGridItemData(layer, gridCoord)` | Remove the main cell and all of its sub cells. |
-| `CheckGridItemSizeHasGirdItem(layer, gridCoord, gridItemSize)` | Check whether a range of a given size already contains an item. |
+| `CheckGridItemSizeHasGridItem(layer, gridCoord, gridItemSize)` | Check whether a range of a given size already contains an item. |
 
 > An item occupies every cell within `GridItemSize`; one of them is the **main cell** (holding the full data) and the rest are **sub cells** (pointing to the main cell). This lets multi-cell furniture/buildings be placed, queried, and removed as a whole.
 

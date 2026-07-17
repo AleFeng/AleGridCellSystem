@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using UnityEditor;
@@ -237,6 +238,17 @@ namespace AleGridCellSystem
 
     public class GridSystemEditorLibrary
     {
+        //数值解析统一使用不变区域性（InvariantCulture），避免在小数分隔符为逗号的系统区域下解析出错
+        private static int ParseInt(string s)
+        {
+            return int.Parse(s, CultureInfo.InvariantCulture);
+        }
+
+        private static float ParseFloat(string s)
+        {
+            return float.Parse(s, CultureInfo.InvariantCulture);
+        }
+
         #region Aseprite Grid Item Data
 
         //从Aseprite导出的数据文本解析并获取数据
@@ -319,7 +331,7 @@ namespace AleGridCellSystem
                 spriteName = headerDatas[0],
                 asepriteGridConfig = new AsepriteGridConfig
                 {
-                    cellSizePixel = new GridCoord(int.Parse(cellSizePixelDatas[0]), int.Parse(cellSizePixelDatas[1]), int.Parse(cellSizePixelDatas[2]))
+                    cellSizePixel = new GridCoord(ParseInt(cellSizePixelDatas[0]), ParseInt(cellSizePixelDatas[1]), ParseInt(cellSizePixelDatas[2]))
                 }
             };
 
@@ -404,8 +416,8 @@ namespace AleGridCellSystem
                             var volumeCutData = realVolumeDatas[i].Split(GridSystemConfig.dataSep4);
                             volumeCutSquares[j] = new Square
                             {
-                                size = new Vector2(int.Parse(volumeCutData[j * 4 + 10]), int.Parse(volumeCutData[j * 4 + 11])),
-                                pos = new Vector2(int.Parse(volumeCutData[j * 4 + 12]), int.Parse(volumeCutData[j * 4 + 13])),
+                                size = new Vector2(ParseInt(volumeCutData[j * 4 + 10]), ParseInt(volumeCutData[j * 4 + 11])),
+                                pos = new Vector2(ParseInt(volumeCutData[j * 4 + 12]), ParseInt(volumeCutData[j * 4 + 13])),
                             };
                         }
                     }
@@ -413,9 +425,9 @@ namespace AleGridCellSystem
                     realVolumes[i] = new AsepriteRealVolumeData()
                     {
                         keyName = realVolumeDataArr[0],
-                        size = new GridCoord(int.Parse(realVolumeDataArr[1]), int.Parse(realVolumeDataArr[2]), int.Parse(realVolumeDataArr[3])),
-                        location = new GridCoord(int.Parse(realVolumeDataArr[4]), int.Parse(realVolumeDataArr[5]), int.Parse(realVolumeDataArr[6])),
-                        rotate = new GridCoordFloat(float.Parse(realVolumeDataArr[7]), float.Parse(realVolumeDataArr[8]), float.Parse(realVolumeDataArr[9])),
+                        size = new GridCoord(ParseInt(realVolumeDataArr[1]), ParseInt(realVolumeDataArr[2]), ParseInt(realVolumeDataArr[3])),
+                        location = new GridCoord(ParseInt(realVolumeDataArr[4]), ParseInt(realVolumeDataArr[5]), ParseInt(realVolumeDataArr[6])),
+                        rotate = new GridCoordFloat(ParseFloat(realVolumeDataArr[7]), ParseFloat(realVolumeDataArr[8]), ParseFloat(realVolumeDataArr[9])),
                         volumeCutSquares = volumeCutSquares
                     };
                 }
@@ -432,7 +444,7 @@ namespace AleGridCellSystem
                     imageData = new AsepriteGridItemImageData
                     {
                         imageName = imageDataArr[0],
-                        imagePos = new Vector2(float.Parse(imageDataArr[1]), float.Parse(imageDataArr[2])) * 0.01f, //数据为像素单位，转换为U3D单位
+                        imagePos = new Vector2(ParseFloat(imageDataArr[1]), ParseFloat(imageDataArr[2])) * 0.01f, //数据为像素单位，转换为U3D单位
                         meshType = AsepriteGridItemImageData.MeshTypeParse(imageDataArr[3]),
                     };
                 }
@@ -441,9 +453,9 @@ namespace AleGridCellSystem
                     imageData = new AsepriteGridItemImageData
                     {
                         imageName = imageDataArr[0],
-                        imagePos = new Vector2(float.Parse(imageDataArr[1]), float.Parse(imageDataArr[2])) * 0.01f, //数据为像素单位，转换为U3D单位
+                        imagePos = new Vector2(ParseFloat(imageDataArr[1]), ParseFloat(imageDataArr[2])) * 0.01f, //数据为像素单位，转换为U3D单位
                         meshType = AsepriteGridItemImageData.MeshTypeParse(imageDataArr[3]),
-                        imageRotate = new Vector3(float.Parse(imageDataArr[4]), float.Parse(imageDataArr[5]), float.Parse(imageDataArr[6]))
+                        imageRotate = new Vector3(ParseFloat(imageDataArr[4]), ParseFloat(imageDataArr[5]), ParseFloat(imageDataArr[6]))
                     };
                 }
                 else if (imageDataArr.Length == 10)
@@ -451,11 +463,11 @@ namespace AleGridCellSystem
                     imageData = new AsepriteGridItemImageData
                     {
                         imageName = imageDataArr[0],
-                        imagePos = new Vector2(float.Parse(imageDataArr[1]), float.Parse(imageDataArr[2])) * 0.01f, //数据为像素单位，转换为U3D单位
+                        imagePos = new Vector2(ParseFloat(imageDataArr[1]), ParseFloat(imageDataArr[2])) * 0.01f, //数据为像素单位，转换为U3D单位
                         meshType = AsepriteGridItemImageData.MeshTypeParse(imageDataArr[3]),
                         haveMeshData = true,
-                        meshSize = new GridCoord(int.Parse(imageDataArr[4]), int.Parse(imageDataArr[5]), int.Parse(imageDataArr[6])),
-                        meshLocalLocation = new GridCoord(int.Parse(imageDataArr[7]), int.Parse(imageDataArr[8]), int.Parse(imageDataArr[9]))
+                        meshSize = new GridCoord(ParseInt(imageDataArr[4]), ParseInt(imageDataArr[5]), ParseInt(imageDataArr[6])),
+                        meshLocalLocation = new GridCoord(ParseInt(imageDataArr[7]), ParseInt(imageDataArr[8]), ParseInt(imageDataArr[9]))
                     };
                 }
                 else if (imageDataArr.Length == 13)
@@ -463,12 +475,12 @@ namespace AleGridCellSystem
                     imageData = new AsepriteGridItemImageData
                     {
                         imageName = imageDataArr[0],
-                        imagePos = new Vector2(float.Parse(imageDataArr[1]), float.Parse(imageDataArr[2])) * 0.01f, //数据为像素单位，转换为U3D单位
+                        imagePos = new Vector2(ParseFloat(imageDataArr[1]), ParseFloat(imageDataArr[2])) * 0.01f, //数据为像素单位，转换为U3D单位
                         meshType = AsepriteGridItemImageData.MeshTypeParse(imageDataArr[3]),
-                        imageRotate = new Vector3(float.Parse(imageDataArr[4]), float.Parse(imageDataArr[5]), float.Parse(imageDataArr[6])),
+                        imageRotate = new Vector3(ParseFloat(imageDataArr[4]), ParseFloat(imageDataArr[5]), ParseFloat(imageDataArr[6])),
                         haveMeshData = true,
-                        meshSize = new GridCoord(int.Parse(imageDataArr[7]), int.Parse(imageDataArr[8]), int.Parse(imageDataArr[9])),
-                        meshLocalLocation = new GridCoord(int.Parse(imageDataArr[10]), int.Parse(imageDataArr[11]), int.Parse(imageDataArr[12]))
+                        meshSize = new GridCoord(ParseInt(imageDataArr[7]), ParseInt(imageDataArr[8]), ParseInt(imageDataArr[9])),
+                        meshLocalLocation = new GridCoord(ParseInt(imageDataArr[10]), ParseInt(imageDataArr[11]), ParseInt(imageDataArr[12]))
                     };
                 }
                 else
@@ -482,8 +494,8 @@ namespace AleGridCellSystem
             AsepriteGridItemData gridItemData = new AsepriteGridItemData
             {
                 keyName = keyName,
-                gridItemSizeUnit = new GridCoord(int.Parse(gridItemSizeUnitArr[0]), int.Parse(gridItemSizeUnitArr[1]), int.Parse(gridItemSizeUnitArr[2])),
-                u3dGridItemLocation = new GridCoordFloat(float.Parse(gridItemLocationArr[0]), float.Parse(gridItemLocationArr[2]), float.Parse(gridItemLocationArr[1])) * 0.01f, //数据为像素单位，转换为U3D单位，U3DY为上，Z为前，需要替换
+                gridItemSizeUnit = new GridCoord(ParseInt(gridItemSizeUnitArr[0]), ParseInt(gridItemSizeUnitArr[1]), ParseInt(gridItemSizeUnitArr[2])),
+                u3dGridItemLocation = new GridCoordFloat(ParseFloat(gridItemLocationArr[0]), ParseFloat(gridItemLocationArr[2]), ParseFloat(gridItemLocationArr[1])) * 0.01f, //数据为像素单位，转换为U3D单位，U3DY为上，Z为前，需要替换
                 realVolumes = realVolumes,
                 scriptTag = scriptTag,
                 prefabName = prefabName,
@@ -1370,8 +1382,6 @@ namespace AleGridCellSystem
                 m_GridCellSystemManager.Init(cellUnitSize.x, cellUnitSize.y, cellUnitSize.z,
                     200, 200, 30, 1);
             }
-
-            m_GridCellSystemManager.ClearAllViewSortGridItem();
 
             MonoBehaviour[] monoBehaviours = gridItemPreformedUnitPrefab.GetComponentsInChildren<MonoBehaviour>();
 

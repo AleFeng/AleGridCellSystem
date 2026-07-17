@@ -93,7 +93,7 @@ https://github.com/AleFeng/AleGridCellSystem.git?path=/Assets/PluginsDeveloper/A
 "com.alefeng.alegridcellsystem": "https://github.com/AleFeng/AleGridCellSystem.git?path=/Assets/PluginsDeveloper/AleGridCellSystem"
 ```
 
-> 需要锁定版本时，可在 URL 末尾追加标签 / 分支名，例如 `...AleGridCellSystem#1.0.0`。
+> 需要锁定版本时，可在 URL 末尾追加标签 / 分支名，例如 `...AleGridCellSystem#1.1.0`。
 
 ### 手动安装
 1. 下载或克隆本仓库。
@@ -166,7 +166,7 @@ grid.RemoveMainGridItemData(0, new GridCoord(3, 4, 0));
 | `SetMainGridItemValue(layer, gridItemData)` | 设置主单元格数值，并按占地尺寸铺设子单元格。 |
 | `PopMainGridItemValue(layer, gridCoord)` | 弹出并移除主单元格（返回其数据副本）。 |
 | `RemoveMainGridItemData(layer, gridCoord)` | 移除主单元格及其全部子单元格。 |
-| `CheckGridItemSizeHasGirdItem(layer, gridCoord, gridItemSize)` | 检测某尺寸范围内是否已有物品。 |
+| `CheckGridItemSizeHasGridItem(layer, gridCoord, gridItemSize)` | 检测某尺寸范围内是否已有物品。 |
 
 > 一件物品占据 `GridItemSize` 范围内的所有单元格，其中一个为**主单元格**（记录完整数据），其余为**子单元格**（指向主单元格）。这让「多格家具 / 建筑」等能被正确放置、查询与整块移除。
 

@@ -145,17 +145,6 @@ namespace AleGridCellSystem
         public static GridCoordFloat one { get { return new GridCoordFloat(1, 1, 1); } }
 
         /// <summary>
-        /// 长度 
-        /// </summary>
-        public float Magnitude
-        {
-            get
-            {
-                return Mathf.Abs((float)Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2) + Math.Pow(Z, 2)));
-            }
-        }
-
-        /// <summary>
         /// 是否 负向量 (XYZ其中一个为负数)
         /// </summary>
         public bool IsMinusVector
@@ -878,28 +867,6 @@ namespace AleGridCellSystem
     }
     #endregion
 
-    /// <summary>
-    /// 网格项目 排序信息
-    /// </summary>
-    [Serializable]
-    public class GridItemSortInfo
-    {
-        /// <summary>
-        /// 渲染物体 根节点
-        /// </summary>
-        public Transform ViewRootTrans;
-
-        /// <summary>
-        /// 网格坐标 精确至小数
-        /// </summary>
-        public GridCoordFloat GridCoordFloat;
-
-        /// <summary>
-        /// 占地尺寸 精确至小数
-        /// </summary>
-        public GridCoordFloat GridItemSize;
-    }
-
     public class GridCellSystemManager
     {
         private GridItemComponent[][,,] m_GridItemArray; //网格 层组
@@ -1135,7 +1102,7 @@ namespace AleGridCellSystem
             if (CheckGridCoordIsInvalid(layer, gridItemData.MainGridCoord)) { return false; }
 
             //检查 物体尺寸单元格内 是否无冲突
-            if (CheckGridItemSizeHasGirdItem(layer, gridItemData.MainGridCoord, gridItemData.GetGridItemSizeAtDirection)) { return false; }
+            if (CheckGridItemSizeHasGridItem(layer, gridItemData.MainGridCoord, gridItemData.GetGridItemSizeAtDirection)) { return false; }
 
             //设置 主单元格 数值
             SetMainGridItemValue(layer, gridItemData);
@@ -1240,7 +1207,7 @@ namespace AleGridCellSystem
         /// <param name="gridCoord"></param>
         /// <param name="gridItemSize"></param>
         /// <returns></returns>
-        public bool CheckGridItemSizeHasGirdItem(int layer, GridCoord gridCoord, GridCoord gridItemSize)
+        public bool CheckGridItemSizeHasGridItem(int layer, GridCoord gridCoord, GridCoord gridItemSize)
         {
             for (int gridCoordXadd = 0; gridCoordXadd < gridItemSize.X; gridCoordXadd++)
             {
@@ -1257,10 +1224,19 @@ namespace AleGridCellSystem
             return false;
         }
 
+        /// <summary>
+        /// 检查 网格物体尺寸单元格内 是否有网格物体
+        /// </summary>
+        [System.Obsolete("方法名拼写已更正，请改用 CheckGridItemSizeHasGridItem。")]
+        public bool CheckGridItemSizeHasGirdItem(int layer, GridCoord gridCoord, GridCoord gridItemSize)
+        {
+            return CheckGridItemSizeHasGridItem(layer, gridCoord, gridItemSize);
+        }
+
         //检查 单元格坐标是否无效
         private bool CheckGridCoordIsInvalid(int layer, GridCoord gridCoord)
         {
-            bool invalid = layer >= m_GridItemArray.Length || gridCoord.X >= m_GridCellCountX || gridCoord.Y >= m_GridCellCountY || gridCoord.Z >= m_GridCellCountZ || gridCoord.X < 0 || gridCoord.Y < 0 || gridCoord.Z < 0;
+            bool invalid = layer < 0 || layer >= m_GridItemArray.Length || gridCoord.X >= m_GridCellCountX || gridCoord.Y >= m_GridCellCountY || gridCoord.Z >= m_GridCellCountZ || gridCoord.X < 0 || gridCoord.Y < 0 || gridCoord.Z < 0;
             return invalid;
         }
         #endregion
@@ -1438,166 +1414,6 @@ namespace AleGridCellSystem
             position.Z = gridPos.Z;
 
             return position;
-        }
-        #endregion
-
-        #region 渲染层级排序 ps:弃用的场景渲染方案
-        private List<GridItemSortInfo> m_ListViewSortGridItem = new List<GridItemSortInfo>();
-
-        /// <summary>
-        /// 添加 网格项目的渲染排序信息
-        /// </summary>
-        /// <param name="sortInfo"></param>
-        public void AddGridItemSortInfo(GridItemSortInfo sortInfo, bool checkRepeatLog = false)
-        {
-            if (sortInfo.ViewRootTrans == null) { return; }
-            //移除 重复的网格项目
-            RemoveGridItemSortInfo(sortInfo);
-
-            GridItemSortInfo sortInfoLast = sortInfo; //上一个 队列中的 网格项目
-            GridItemSortInfo sortInfoCur = sortInfo; //下一个 队列中的 网格项目
-            GridCoordFloat gridCoordTar = sortInfo.GridCoordFloat; //需要排序的 网格项目坐标
-            GridCoordFloat gridCoordCur = GridCoordFloat.zero; //队列中的 网格项目坐标
-            int indexInsert = m_ListViewSortGridItem.Count; //需要排序的 网格项目 在队列中的位置
-            float posSortFront = -sortInfo.GridCoordFloat.Z * CellUnitSizeZ; //前方物体的 排序坐标值
-            float posSortBack = posSortFront; //前方物体的 排序坐标值
-            bool isFront = true;
-
-            //设置默认的深度值
-            var posOriSortInfoCur = sortInfoCur.ViewRootTrans.position;
-            sortInfoCur.ViewRootTrans.position = new Vector3(posOriSortInfoCur.x, posSortFront, posOriSortInfoCur.z);
-
-            //比较排序
-            for (int i = m_ListViewSortGridItem.Count - 1; i >= 0; i--)
-            {
-                var gridItemCheck = m_ListViewSortGridItem[i]; //获取 当前的 网格项目
-                
-                //移除 无效的网格项目
-                if (gridItemCheck == sortInfo || gridItemCheck.ViewRootTrans == null)
-                {
-                    m_ListViewSortGridItem.RemoveAt(i);
-                    indexInsert--;
-                    continue;
-                }
-
-                sortInfoLast = sortInfoCur; //记录 上一个 网格项目
-                sortInfoCur = gridItemCheck; //记录 当前的 网格项目
-                gridCoordCur = sortInfoCur.GridCoordFloat;
-
-                //检查 主坐标重复
-                if (checkRepeatLog)
-                {
-                    if ((gridCoordTar - gridCoordCur).Magnitude < 0.01f)
-                    {
-                        Debug.LogError($"GridCellSystemManager.AddViewSortGridItem() Error! >> 重叠的主坐标网格项目！GameObjectName1-{sortInfoCur.ViewRootTrans.parent.name} GameObjectName2-{sortInfo.ViewRootTrans.parent.name}");
-                    }
-                }
-
-                //根据坐标与尺寸 判断前后关系
-                if(gridCoordTar.Y == gridCoordCur.Y && gridCoordTar.Z == gridCoordCur.Z)
-                {
-                    if (sortInfo.GridItemSize.Z >= sortInfoCur.GridItemSize.Z) //占用尺寸更高
-                        isFront = true; //在前方
-                    else
-                        isFront = false; //在后方
-                }
-                else if (gridCoordTar.Y <= gridCoordCur.Y && gridCoordTar.Z >= gridCoordCur.Z)
-                {
-                    if ((gridCoordTar.X >= gridCoordCur.X && gridCoordCur.X + sortInfoCur.GridItemSize.X - gridCoordTar.X > 0.2f) ||
-                        (gridCoordTar.X <= gridCoordCur.X && gridCoordTar.X + sortInfo.GridItemSize.X - gridCoordCur.X > 0.2f))
-                        isFront = true; //占用尺寸重叠 重叠长度大于0.2个单元格
-                    else if (sortInfo.GridItemSize.Z >= sortInfoCur.GridItemSize.Z)
-                        isFront = true; //占用尺寸更高
-                    else
-                        isFront = false; //在后方
-                }
-                else if (gridCoordTar.Y >= gridCoordCur.Y && gridCoordTar.Z < gridCoordCur.Z)
-                {
-                    if (gridCoordTar.Y <= gridCoordCur.Y + sortInfoCur.GridItemSize.Y &&
-                        gridCoordTar.Z <= gridCoordCur.Z && gridCoordTar.Z + sortInfo.GridItemSize.Z >= gridCoordCur.Z + sortInfoCur.GridItemSize.Z)
-                        isFront = true; //当前的网格项目 内嵌至 需要排序的网格项目
-                    else
-                        isFront = false;
-                }
-                else if (gridCoordTar.Y < gridCoordCur.Y && gridCoordTar.Z < gridCoordCur.Z)
-                {
-                    if (gridCoordTar.Y + sortInfo.GridItemSize.Y <= gridCoordCur.Y)
-                        isFront = true;
-                    else if(gridCoordTar.Z <= gridCoordCur.Z && gridCoordTar.Z + sortInfo.GridItemSize.Z >= gridCoordCur.Z + sortInfoCur.GridItemSize.Z)
-                        isFront = true; //当前的网格项目 内嵌至 需要排序的网格项目
-                    else
-                        isFront = false;
-                }
-                else //if(coordTar.Y > coordCur.Y && coordTar.Z > coordCur.Z)
-                {
-                    if (gridCoordTar.Y >= gridCoordCur.Y + sortInfoCur.GridItemSize.Y)
-                        isFront = false;
-                    else if(gridCoordTar.Z >= gridCoordCur.Z && gridCoordTar.Z + sortInfo.GridItemSize.Z < gridCoordCur.Z + sortInfoCur.GridItemSize.Z)
-                        isFront = false;  //需要排序的网格项目 内嵌至 当前的网格项目
-                    else
-                        isFront = true;
-                }
-
-                //记录 前后网格项目的排序坐标值
-                posSortBack = sortInfoCur.ViewRootTrans.position.y;
-                posSortFront = sortInfoLast.ViewRootTrans.position.y;
-
-                //比较排序结束
-                if (isFront)
-                {
-                    break;
-                }
-
-                indexInsert--; //插入下标 前移
-            }
-
-            //边界情况 最前或最后
-            //距离小于0.001f
-            if (indexInsert == 0 && (posSortBack - posSortFront) < 0.04f)
-            {
-                //排在最后
-                posSortFront = posSortBack - 0.2f;
-            }
-            else if (indexInsert >= m_ListViewSortGridItem.Count && (posSortFront - posSortBack) < 0.04f)
-            {
-                //排在最前
-                posSortFront = posSortBack + 0.2f;
-            }
-
-            //设置显示物体的渲染深度坐标 插到前后网格项目的中间
-            var posOri = sortInfo.ViewRootTrans.position;
-            sortInfo.ViewRootTrans.position = new Vector3(posOri.x, (posSortFront + posSortBack) * 0.5f, posOri.z);
-
-            //插入队列
-            m_ListViewSortGridItem.Insert(indexInsert, sortInfo);
-
-            //渲染物体高度大于0 || 队列中世界位置过于密集时 重新等距排序
-            if (sortInfo.ViewRootTrans.position.y > 0f || Math.Abs(posSortFront - posSortBack) < 0.001f)
-            {
-                for (int i = m_ListViewSortGridItem.Count - 1; i >= 0; i--)
-                {
-                    var viewObjTrans = m_ListViewSortGridItem[i].ViewRootTrans;
-                    posOri = viewObjTrans.position;
-                    viewObjTrans.position = new Vector3(posOri.x, (m_ListViewSortGridItem.Count - i) * -0.2f - 10f, posOri.z);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 移除 网格项目的渲染排序信息
-        /// </summary>
-        /// <param name="sortInfo"></param>
-        public void RemoveGridItemSortInfo(GridItemSortInfo sortInfo)
-        {
-            m_ListViewSortGridItem.Remove(sortInfo);
-        }
-
-        /// <summary>
-        /// 清除 所有渲染层级排序项目
-        /// </summary>
-        public void ClearAllViewSortGridItem()
-        {
-            m_ListViewSortGridItem.Clear();
         }
         #endregion
 

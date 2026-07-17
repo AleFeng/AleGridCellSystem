@@ -1,6 +1,6 @@
 {
   "name": "com.alefeng.alegridcellsystem",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "displayName": "AleGridCellSystem",
   "description": "三维网格单元系统 —— 用于基于网格的建造、放置、定位、区域划分等玩法。A 3D grid cell system for Unity: grid-based building, placement, location and area partitioning.",
   "unity": "2021.3",
