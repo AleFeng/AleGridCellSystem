@@ -23,13 +23,14 @@ AleGridCellSystem は `Unity` 向けの **3D グリッドセルシステム**で
 「グリッドのロジック」と「表示の見た目」を完全に分離しているのが特徴です。グリッド上のアイテムは**純粋なデータ**であり（`GameObject` や Unity のコライダーを必須としません）、1 つのアイテムが**複数セルにまたがり**、**向き**を持ち、**任意のステート**を保持し、占有サイズとは独立した**実体積（コリジョン）**を持てます。  
 その上に、**定位システム**（周囲のアイテムと相対方向の検出）、**エリアシステム**（部屋分割とフォーカス断面表示）、そして `Aseprite` を用いた**エディタ用アセットパイプライン**（グリッドアイテムのプレハブ・メッシュ・コライダー・組み立て体をワンクリックで生成）を備えています。
 
-> 名前空間は `FsGridCellSystem` で、以下の API はすべてこの名前空間に含まれます。
+> 名前空間は `AleGridCellSystem` で、以下の API はすべてこの名前空間に含まれます。
 
 ## 📜 目次
 - [✨ 概要](#-概要)
   - [特徴](#特徴)
 - [💻 動作環境](#-動作環境)
 - [📦 インストール](#-インストール)
+  - [UPM でインストール（推奨）](#upm-でインストール推奨)
   - [手動インストール](#手動インストール)
   - [依存関係](#依存関係)
 - [🧩 コアコンセプト](#-コアコンセプト)
@@ -75,22 +76,35 @@ AleGridCellSystem は `Unity` 向けの **3D グリッドセルシステム**で
 - **エディタ用アセットパイプライン**（プレハブ / メッシュ / コライダーの自動生成）は `Aseprite` から出力したグリッドデータテキストに依存します。詳細は [Aseprite アセットパイプライン](#aseprite-アセットパイプライン) を参照。
 
 ## 📦 インストール
-### 手動インストール
-本システムはソースコードで提供されます。プラグインフォルダをそのままプロジェクトへコピーしてください。
+### UPM でインストール（推奨）
+Unity Package Manager から git URL でインストールします。
 
+1. `Window → Package Manager` を開きます。
+2. 左上の `+` → `Add package from git URL...` をクリックします。
+3. 以下のアドレスを貼り付けて `Add` をクリックします。
+
+```
+https://github.com/AleFeng/AleGridCellSystem.git?path=/Assets/PluginsDeveloper/AleGridCellSystem
+```
+
+または、プロジェクトの `Packages/manifest.json` の `dependencies` に直接追加します。
+
+```json
+"com.alefeng.alegridcellsystem": "https://github.com/AleFeng/AleGridCellSystem.git?path=/Assets/PluginsDeveloper/AleGridCellSystem"
+```
+
+> バージョンを固定する場合は、URL の末尾にタグ / ブランチ名を付けます（例：`...AleGridCellSystem#1.0.0`）。
+
+### 手動インストール
 1. 本リポジトリをダウンロードまたはクローンします。
 2. `Assets/PluginsDeveloper/AleGridCellSystem` フォルダ全体を、あなたのプロジェクトの `Assets` ディレクトリへコピーします。
-3. Unity のコンパイル完了後、`FsGridCellSystem` 名前空間下の各種 API を利用できます。
-
-> UPM（Package Manager）で git URL からインストールしたい場合は、プラグインのルートに `package.json`（および任意で `.asmdef` アセンブリ定義）を追加し、該当パスを参照してください。
+3. Unity のコンパイル完了後、`AleGridCellSystem` 名前空間下の各種 API を利用できます。
 
 ### 依存関係
-本プラグインは作者のフルプロジェクトから切り出したものです。**ランタイムコアは単体で使用できます**が、**一部のエディタ機能**は同梱されていない外部フレームワークを参照しています。
+プラグインは**自己完結しており、単体でコンパイル・実行できます**。ランタイムとエディタのアセンブリはいずれも Unity 自身のみに依存し、サードパーティ製フレームワークへの依存はありません。
 
-- `GridSystemEditorLibrary`（エディタライブラリ）は `EntrustSystem`、`ConfigSystem.Instance.CreateMaterial(...)`、および `GetOrAddComponent` などの拡張を使用します。
-- `GridItemComponent` 内の**非推奨**（deprecated）な旧描画ソートメソッドが `GuildGridModel` を参照します。
-
-これらのフレームワークがプロジェクトに無い場合は、統合時に上記のエディタ関連の参照を削除 / 置換するか、ランタイムコアのみを利用してください。
+- エディタの自動生成パイプラインは、`Aseprite` から出力したグリッドデータテキストを入力とします（[Aseprite アセットパイプライン](#aseprite-アセットパイプライン) を参照）。
+- 生成する表示メッシュに使うシェーダーは `GridSystemConfig.viewMaterialShaderName` で設定できます（既定は `Able/Lit-Alpha`）。プロジェクト内に該当シェーダーが見つからない場合は、内蔵の `Sprites/Default` へ自動的にフォールバックします。
 
 ## 🧩 コアコンセプト
 - **グリッドとレイヤー**：グリッド全体は `GridCellSystemManager` が管理し、内部は「レイヤー群」です。各レイヤーは `X × Y × Z` の 3D セル配列で、`Init(...)` でセルのワールドサイズ・各軸のセル数・レイヤー数を指定します。
@@ -103,7 +117,7 @@ AleGridCellSystem は `Unity` 向けの **3D グリッドセルシステム**で
 以下は `GridCellSystemManager` を直接使ってグリッドデータを管理する例です。
 
 ```csharp
-using FsGridCellSystem;
+using AleGridCellSystem;
 using UnityEngine;
 
 // 1. グリッドを生成・初期化：セルのワールドサイズ 1×1×1、グリッド 20×20×10、1 レイヤー
@@ -249,7 +263,7 @@ grid.SetFocusAreaInfo(null);
 > 2.5D 投影では、オブジェクトの**高さが表示 Y 軸に加算**され、奥行き座標から**描画深度**が算出されるため、「より手前 / より高い」オブジェクトが後方のオブジェクトを正しく遮蔽します。`GridCellSystemManager` にはこれに基づく描画ソートキュー（`AddGridItemSortInfo` など、旧方式として保持）も残されています。
 
 ## 🛠️ エディタツール
-メニュー `Tools/FsGridCellSystem/GridItemToolsWindow` から**グリッドアイテムツールウィンドウ**を開けます。グリッドアイテムのプレハブ、および複数のグリッドアイテムで構成される**組み立て体（PreformedUnit）**プレハブを**一括生成 / 更新**するためのツールです。
+メニュー `Tools/AleGridCellSystem/GridItemToolsWindow` から**グリッドアイテムツールウィンドウ**を開けます。グリッドアイテムのプレハブ、および複数のグリッドアイテムで構成される**組み立て体（PreformedUnit）**プレハブを**一括生成 / 更新**するためのツールです。
 
 ### Aseprite アセットパイプライン
 本ツールのデータソースは `Aseprite` です。Aseprite でピクセルのグリッド素材を描き、付属の Lua 出力スクリプトでグリッド設定を `.txt` データテキストへ出力します。ツールはそのテキスト（ヘッダーにセルのピクセルサイズ等、続いて各アイテムのサイズ・位置・実体積・スクリプトタグ・画像リストなど）を解析し、Unity 上で以下を自動生成します。

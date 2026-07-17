@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace FsGridCellSystem
+namespace AleGridCellSystem
 {
     /// <summary>
     /// 项目继承此类型，介入到创建GridItem的工作流中。

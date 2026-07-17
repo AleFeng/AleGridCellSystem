@@ -23,13 +23,14 @@ AleGridCellSystem 是一套面向 `Unity` 的**三维网格单元系统**，用�
 它把「网格逻辑」和「显示表现」彻底解耦：网格中的物品是**纯数据**（不强制依赖 `GameObject` 与 Unity 碰撞器），一件物品可以**跨多个单元格**、拥有**朝向**、携带**任意状态**，并可挂载与占地尺寸相互独立的**真实碰撞体积**。  
 在此之上还提供了**定位系统**（检测周围物体及其相对方向）、**区域系统**（房间划分与焦点剖面显示），以及一套基于 `Aseprite` 的**编辑器资产管线**，可一键批量生成网格物品预制体、网格 Mesh、碰撞器与组装件。
 
-> 命名空间为 `FsGridCellSystem`，代码内 API 均在此命名空间下。
+> 命名空间为 `AleGridCellSystem`，代码内 API 均在此命名空间下。
 
 ## 📜 目录
 - [✨ 简介](#-简介)
   - [项目特性](#项目特性)
 - [💻 环境要求](#-环境要求)
 - [📦 安装](#-安装)
+  - [使用 UPM（推荐）](#使用-upm推荐)
   - [手动安装](#手动安装)
   - [依赖说明](#依赖说明)
 - [🧩 核心概念](#-核心概念)
@@ -75,22 +76,35 @@ AleGridCellSystem 是一套面向 `Unity` 的**三维网格单元系统**，用�
 - **编辑器资产管线**（自动生成预制体 / Mesh / 碰撞器）依赖由 `Aseprite` 导出的网格数据文本，详见 [Aseprite 资产管线](#aseprite-资产管线)。
 
 ## 📦 安装
-### 手动安装
-本系统以源码形式提供，直接把插件文件夹拷贝进你的工程即可：
+### 使用 UPM（推荐）
+通过 Unity Package Manager 以 git URL 安装：
 
+1. 打开 `Window → Package Manager`。
+2. 点击左上角 `+` → `Add package from git URL...`。
+3. 粘贴以下地址并点击 `Add`：
+
+```
+https://github.com/AleFeng/AleGridCellSystem.git?path=/Assets/PluginsDeveloper/AleGridCellSystem
+```
+
+或直接在工程的 `Packages/manifest.json` 的 `dependencies` 中添加：
+
+```json
+"com.alefeng.alegridcellsystem": "https://github.com/AleFeng/AleGridCellSystem.git?path=/Assets/PluginsDeveloper/AleGridCellSystem"
+```
+
+> 需要锁定版本时，可在 URL 末尾追加标签 / 分支名，例如 `...AleGridCellSystem#1.0.0`。
+
+### 手动安装
 1. 下载或克隆本仓库。
 2. 将 `Assets/PluginsDeveloper/AleGridCellSystem` 整个文件夹拷贝到你自己工程的 `Assets` 目录下。
-3. 等待 Unity 编译完成，即可在 `FsGridCellSystem` 命名空间下使用各类 API。
-
-> 若你希望通过 UPM（Package Manager）以 git URL 方式安装，可自行在插件根目录添加 `package.json`（及可选的 `.asmdef` 程序集定义），再引用对应路径。
+3. 等待 Unity 编译完成，即可在 `AleGridCellSystem` 命名空间下使用各类 API。
 
 ### 依赖说明
-本插件由作者的完整项目中抽离而来，**运行时核心逻辑可独立使用**，但**部分编辑器功能**引用了未随插件提供的外部框架：
+插件**自包含、可独立编译运行**，运行时与编辑器均只依赖 Unity 自身，无第三方框架依赖。
 
-- `GridSystemEditorLibrary`（编辑器库）使用了 `EntrustSystem`、`ConfigSystem.Instance.CreateMaterial(...)` 以及 `GetOrAddComponent` 等扩展。
-- `GridItemComponent` 中一个**已弃用**的旧渲染排序方法引用了 `GuildGridModel`。
-
-若你的工程中没有这些框架，请在集成时移除 / 替换上述编辑器相关引用，或仅使用运行时核心部分。
+- 编辑器的自动生成管线以 `Aseprite` 导出的网格数据文本为输入（见 [Aseprite 资产管线](#aseprite-资产管线)）。
+- 生成显示网格所用的材质着色器可通过 `GridSystemConfig.viewMaterialShaderName` 配置（默认 `Able/Lit-Alpha`）；当工程内找不到该着色器时，会自动回退到内置着色器 `Sprites/Default`。
 
 ## 🧩 核心概念
 - **网格与分层**：整个网格由 `GridCellSystemManager` 管理，内部是「层组」——每层是一个 `X × Y × Z` 的三维单元格数组。通过 `Init(...)` 指定单元格世界尺寸、各轴数量与层数。
@@ -103,7 +117,7 @@ AleGridCellSystem 是一套面向 `Unity` 的**三维网格单元系统**，用�
 下面演示如何直接使用 `GridCellSystemManager` 管理网格数据：
 
 ```csharp
-using FsGridCellSystem;
+using AleGridCellSystem;
 using UnityEngine;
 
 // 1. 创建并初始化网格：单元格世界尺寸 1×1×1，网格 20×20×10，1 层
@@ -249,7 +263,7 @@ grid.SetFocusAreaInfo(null);
 > 在 2.5D 投影中，物体的**高度会叠加到显示的 Y 轴**，同时以纵向坐标换算出**渲染深度**，从而让「更靠前 / 更高」的物体正确遮挡后方物体。`GridCellSystemManager` 中还保留了一套基于此的渲染排序队列（`AddGridItemSortInfo` 等，标注为旧方案）。
 
 ## 🛠️ 编辑器工具
-菜单 `Tools/FsGridCellSystem/GridItemToolsWindow` 打开**网格物品工具窗口**，用于**批量创建 / 更新**网格物品预制体，以及由多个网格物品组成的**组装件（PreformedUnit）**预制体。
+菜单 `Tools/AleGridCellSystem/GridItemToolsWindow` 打开**网格物品工具窗口**，用于**批量创建 / 更新**网格物品预制体，以及由多个网格物品组成的**组装件（PreformedUnit）**预制体。
 
 ### Aseprite 资产管线
 本工具的数据来源是 `Aseprite`：在 Aseprite 中绘制像素网格素材，并通过配套的 Lua 导出脚本把网格配置导出为 `.txt` 数据文本。工具解析该文本（头部含单元格像素尺寸等，逐条为每件物品的尺寸、位置、真实体积、脚本标记、图片列表等），再在 Unity 中据此自动生成：

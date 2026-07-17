@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 using System.IO;
 
-namespace FsGridCellSystem
+namespace AleGridCellSystem
 {
     public class GridSystemLibrary
     {

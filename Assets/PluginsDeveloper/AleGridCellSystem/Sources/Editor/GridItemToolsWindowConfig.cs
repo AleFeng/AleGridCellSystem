@@ -1,28 +1,28 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
 
-namespace FsGridCellSystem
+namespace AleGridCellSystem
 {
     /// <summary>
-    /// Íø¸ñÎïÆ·¹¤¾ß´°¿ÚÅäÖÃ
-    /// ¿É»º´æºÍ´æ´¢ÓÃ»§ÔÚ´°¿Ú½øĞĞµÄÅäÖÃ
+    /// ç½‘æ ¼ç‰©å“å·¥å…·çª—å£é…ç½®
+    /// å¯ç¼“å­˜å’Œå­˜å‚¨ç”¨æˆ·åœ¨çª—å£è¿›è¡Œçš„é…ç½®
     /// </summary>
     [Serializable]
     public class GridItemToolsWindowConfig : ScriptableObject
     {
-        //Íø¸ñÎïÆ·ÅäÖÃKeyVaule
+        //ç½‘æ ¼ç‰©å“é…ç½®KeyVaule
         [Serializable]
         public struct GridItemScriptSetting
         {
             /// <summary>
-            /// ½Å±¾Tag£¬ÔÚAsepriteÖĞ±à¼­×ÊÔ´Ê±ÉèÖÃ£¬Í¨¹ıµ¼³öµÄÊı¾İText»ñÈ¡²¢½øĞĞÑéÖ¤
+            /// è„šæœ¬Tagï¼Œåœ¨Asepriteä¸­ç¼–è¾‘èµ„æºæ—¶è®¾ç½®ï¼Œé€šè¿‡å¯¼å‡ºçš„æ•°æ®Textè·å–å¹¶è¿›è¡ŒéªŒè¯
             /// </summary>
             public string scriptTag;
 
             /// <summary>
-            /// ĞèÒª¹ÒÔØÔÚGridItemÔ¤ÖÆÌåÉÏµÄ½Å±¾
+            /// éœ€è¦æŒ‚è½½åœ¨GridItemé¢„åˆ¶ä½“ä¸Šçš„è„šæœ¬
             /// </summary>
             public MonoScript gridItemScript;
 
@@ -59,37 +59,37 @@ namespace FsGridCellSystem
             }
         }
 
-        public MonoScript processorScript;//¹¤×÷Á÷´¦ÀíÆ÷½Å±¾GridItemToolsWindowProcessor
+        public MonoScript processorScript;//å·¥ä½œæµå¤„ç†å™¨è„šæœ¬GridItemToolsWindowProcessor
 
-        //Éú³ÉÔ¤ÖÆ¼ş¼°ÅúÁ¿Íø¸ñÎïÆ·
-        public TextAsset gridItemsDataTxt_CreatePrefab;//Íø¸ñÎïÆ·Êı¾İÎÄ±¾
-        public string imagesFolderPath_CreatePrefab;//Íø¸ñÎïÆ·Í¼Æ¬´æ·ÅÎÄ¼ş¼ĞÂ·¾¶
-        public string gridItemsExportFolder_CreatePrefab;//Íø¸ñÎïÆ·Ô¤ÖÆÌåµ¼³öÎÄ¼ş¼ĞÂ·¾¶
-        public MonoScript gridItemMonoScript_CreatePrefab;//Íø¸ñÎïÆ·½Å±¾»ùÀà
+        //ç”Ÿæˆé¢„åˆ¶ä»¶åŠæ‰¹é‡ç½‘æ ¼ç‰©å“
+        public TextAsset gridItemsDataTxt_CreatePrefab;//ç½‘æ ¼ç‰©å“æ•°æ®æ–‡æœ¬
+        public string imagesFolderPath_CreatePrefab;//ç½‘æ ¼ç‰©å“å›¾ç‰‡å­˜æ”¾æ–‡ä»¶å¤¹è·¯å¾„
+        public string gridItemsExportFolder_CreatePrefab;//ç½‘æ ¼ç‰©å“é¢„åˆ¶ä½“å¯¼å‡ºæ–‡ä»¶å¤¹è·¯å¾„
+        public MonoScript gridItemMonoScript_CreatePrefab;//ç½‘æ ¼ç‰©å“è„šæœ¬åŸºç±»
         [SerializeField]
-        public List<GridItemScriptSetting> gridItemScriptSettings = new List<GridItemScriptSetting>();//Íø¸ñÎïÆ·½Å±¾ÏêÏ¸ÅäÖÃ
-        public bool useExistedPrefab_CreatePrefab = true;//Ê¹ÓÃÒÑ¾­´æÔÚµÄÔ¤ÖÆÌå
-        public string gridItemPrefabSearchPath_CreatePrefab;//Íø¸ñÎïÆ·Ô¤ÖÆÌåËÑË÷Â·¾¶
-        public bool gridItemPrefabUpdate_CreatePrefab = true;//¸üĞÂÒÑÓĞÔ¤ÖÆÌåµÄÊı¾İ
-        public bool gridItemPrefabUpdate_GridItemMonoScript = true;//¸üĞÂMono½Å±¾
-        public bool gridItemPrefabUpdate_GridItemComponent_CreatePrefab = true;//¸üĞÂGridItemÉÏµÄGridItemComponentÊı¾İ
-        public bool gridItemPrefabUpdate_ViewRoot_CreatePrefab = true;//¸üĞÂGridItemÖĞViewRootÏÔÊ¾ÓÃ½Úµã
-        public bool gridItemPrefabUpdate_ColliderRoot_CreatePrefab = false;//¸üĞÂÅö×²Æ÷½Úµã£¬Ä¬ÈÏ¹Ø±Õ¡£ÒòÎª¿ÉÄÜ´íÎóµÄ¸²¸ÇÁË¾­¹ıÊÖ¹¤µ÷ÕûµÄÅö×²Æ÷¡£
+        public List<GridItemScriptSetting> gridItemScriptSettings = new List<GridItemScriptSetting>();//ç½‘æ ¼ç‰©å“è„šæœ¬è¯¦ç»†é…ç½®
+        public bool useExistedPrefab_CreatePrefab = true;//ä½¿ç”¨å·²ç»å­˜åœ¨çš„é¢„åˆ¶ä½“
+        public string gridItemPrefabSearchPath_CreatePrefab;//ç½‘æ ¼ç‰©å“é¢„åˆ¶ä½“æœç´¢è·¯å¾„
+        public bool gridItemPrefabUpdate_CreatePrefab = true;//æ›´æ–°å·²æœ‰é¢„åˆ¶ä½“çš„æ•°æ®
+        public bool gridItemPrefabUpdate_GridItemMonoScript = true;//æ›´æ–°Monoè„šæœ¬
+        public bool gridItemPrefabUpdate_GridItemComponent_CreatePrefab = true;//æ›´æ–°GridItemä¸Šçš„GridItemComponentæ•°æ®
+        public bool gridItemPrefabUpdate_ViewRoot_CreatePrefab = true;//æ›´æ–°GridItemä¸­ViewRootæ˜¾ç¤ºç”¨èŠ‚ç‚¹
+        public bool gridItemPrefabUpdate_ColliderRoot_CreatePrefab = false;//æ›´æ–°ç¢°æ’å™¨èŠ‚ç‚¹ï¼Œé»˜è®¤å…³é—­ã€‚å› ä¸ºå¯èƒ½é”™è¯¯çš„è¦†ç›–äº†ç»è¿‡æ‰‹å·¥è°ƒæ•´çš„ç¢°æ’å™¨ã€‚
 
-        //¸üĞÂµ¥¸öÍø¸ñÎïÆ·Ô¤ÖÆÌå
-        public GameObject singleGridItemPrefabUpdate_Prefab;//Íø¸ñÎïÆ·Ô¤ÖÆÌå
-        public TextAsset singleGridItemPrefabUpdate_DataText;//Íø¸ñÎïÆ·Êı¾İÎÄ±¾
-        public bool singleGridItemPrefabUpdate_GridItemMonoScript = true;//¸üĞÂMono½Å±¾
-        public bool singleGridItemPrefabUpdate_GridItemComponent = true;//¸üĞÂGridItemÉÏµÄGridItemComponentÊı¾İ
-        public bool singleGridItemPrefabUpdate_ViewRoot = true;//¸üĞÂGridItemÖĞViewRootÏÔÊ¾ÓÃ½Úµã
-        public bool singleGridItemPrefabUpdate_ColliderRoot = true;//¸üĞÂÅö×²Æ÷½Úµã£¬Ä¬ÈÏ¹Ø±Õ¡£ÒòÎª¿ÉÄÜ´íÎóµÄ¸²¸ÇÁË¾­¹ıÊÖ¹¤µ÷ÕûµÄÅö×²Æ÷¡£
+        //æ›´æ–°å•ä¸ªç½‘æ ¼ç‰©å“é¢„åˆ¶ä½“
+        public GameObject singleGridItemPrefabUpdate_Prefab;//ç½‘æ ¼ç‰©å“é¢„åˆ¶ä½“
+        public TextAsset singleGridItemPrefabUpdate_DataText;//ç½‘æ ¼ç‰©å“æ•°æ®æ–‡æœ¬
+        public bool singleGridItemPrefabUpdate_GridItemMonoScript = true;//æ›´æ–°Monoè„šæœ¬
+        public bool singleGridItemPrefabUpdate_GridItemComponent = true;//æ›´æ–°GridItemä¸Šçš„GridItemComponentæ•°æ®
+        public bool singleGridItemPrefabUpdate_ViewRoot = true;//æ›´æ–°GridItemä¸­ViewRootæ˜¾ç¤ºç”¨èŠ‚ç‚¹
+        public bool singleGridItemPrefabUpdate_ColliderRoot = true;//æ›´æ–°ç¢°æ’å™¨èŠ‚ç‚¹ï¼Œé»˜è®¤å…³é—­ã€‚å› ä¸ºå¯èƒ½é”™è¯¯çš„è¦†ç›–äº†ç»è¿‡æ‰‹å·¥è°ƒæ•´çš„ç¢°æ’å™¨ã€‚
 
-        //Íø¸ñÎïÆ·ÕûÌå×é×°¼ş¸üĞÂ
-        public GameObject gridItemPreformedUnitPrefab_Update_Prefab;//Íø¸ñÎïÆ·Ô¤ÖÆ¼şµÄÔ¤ÖÆÌå
-        public TextAsset gridItemsDataTxt_Update_DataText;//Íø¸ñÎïÆ·Êı¾İÎÄ±¾
+        //ç½‘æ ¼ç‰©å“æ•´ä½“ç»„è£…ä»¶æ›´æ–°
+        public GameObject gridItemPreformedUnitPrefab_Update_Prefab;//ç½‘æ ¼ç‰©å“é¢„åˆ¶ä»¶çš„é¢„åˆ¶ä½“
+        public TextAsset gridItemsDataTxt_Update_DataText;//ç½‘æ ¼ç‰©å“æ•°æ®æ–‡æœ¬
 
-        //ÅúÁ¿ÉèÖÃÍø¸ñÎïÆ·×é×°¼şÄÚËùÓĞÍø¸ñÎïÆ·µÄViewRoot
-        public GameObject gridItemPreformedUnitPrefab_ViewRootSet;//Íø¸ñÎïÆ·Ô¤ÖÆ¼şµÄÔ¤ÖÆÌå
-        public TextAsset gridItemsDataTxt_ViewRootSet;//Íø¸ñÎïÆ·Êı¾İÎÄ±¾
+        //æ‰¹é‡è®¾ç½®ç½‘æ ¼ç‰©å“ç»„è£…ä»¶å†…æ‰€æœ‰ç½‘æ ¼ç‰©å“çš„ViewRoot
+        public GameObject gridItemPreformedUnitPrefab_ViewRootSet;//ç½‘æ ¼ç‰©å“é¢„åˆ¶ä»¶çš„é¢„åˆ¶ä½“
+        public TextAsset gridItemsDataTxt_ViewRootSet;//ç½‘æ ¼ç‰©å“æ•°æ®æ–‡æœ¬
     }
 }

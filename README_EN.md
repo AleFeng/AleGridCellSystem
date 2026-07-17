@@ -23,13 +23,14 @@ AleGridCellSystem is a **3D grid cell system** for `Unity`, designed for grid-ba
 It fully decouples "grid logic" from "visual representation": items in the grid are **pure data** (they do not require a `GameObject` or a Unity collider). A single item can **span multiple cells**, have an **orientation**, carry **arbitrary states**, and own a **real collision volume** that is independent of its footprint.  
 On top of this it provides a **location system** (detect nearby items and their relative direction), an **area system** (room partitioning with a focus/cutaway view), and an `Aseprite`-based **editor asset pipeline** that generates grid-item prefabs, meshes, colliders, and assembled units with one click.
 
-> The namespace is `FsGridCellSystem`; all APIs below live under it.
+> The namespace is `AleGridCellSystem`; all APIs below live under it.
 
 ## 📜 Table of Contents
 - [✨ Introduction](#-introduction)
   - [Features](#features)
 - [💻 Requirements](#-requirements)
 - [📦 Installation](#-installation)
+  - [Via UPM (recommended)](#via-upm-recommended)
   - [Manual install](#manual-install)
   - [Dependencies](#dependencies)
 - [🧩 Core Concepts](#-core-concepts)
@@ -75,22 +76,35 @@ The system also has built-in **coordinate conversion** (grid ↔ world ↔ 2.5D 
 - The **editor asset pipeline** (auto-generating prefabs / meshes / colliders) relies on grid data text exported from `Aseprite` — see [Aseprite asset pipeline](#aseprite-asset-pipeline).
 
 ## 📦 Installation
-### Manual install
-The system ships as source code; copy the plugin folder into your project:
+### Via UPM (recommended)
+Install through the Unity Package Manager using a git URL:
 
+1. Open `Window → Package Manager`.
+2. Click the `+` in the top-left → `Add package from git URL...`.
+3. Paste the address below and click `Add`:
+
+```
+https://github.com/AleFeng/AleGridCellSystem.git?path=/Assets/PluginsDeveloper/AleGridCellSystem
+```
+
+Or add it directly to the `dependencies` of your project's `Packages/manifest.json`:
+
+```json
+"com.alefeng.alegridcellsystem": "https://github.com/AleFeng/AleGridCellSystem.git?path=/Assets/PluginsDeveloper/AleGridCellSystem"
+```
+
+> To pin a version, append a tag/branch name to the URL, e.g. `...AleGridCellSystem#1.0.0`.
+
+### Manual install
 1. Download or clone this repository.
 2. Copy the entire `Assets/PluginsDeveloper/AleGridCellSystem` folder into the `Assets` directory of your own project.
-3. Wait for Unity to compile, then use the APIs under the `FsGridCellSystem` namespace.
-
-> To install via UPM (Package Manager) using a git URL, add a `package.json` (and optionally an `.asmdef` assembly definition) to the plugin root and reference the corresponding path.
+3. Wait for Unity to compile, then use the APIs under the `AleGridCellSystem` namespace.
 
 ### Dependencies
-This plugin was extracted from the author's full project. The **runtime core can be used standalone**, but **some editor features** reference external frameworks that are not bundled:
+The plugin is **self-contained and compiles standalone**; both the runtime and editor assemblies depend only on Unity itself — no third-party frameworks.
 
-- `GridSystemEditorLibrary` (the editor library) uses `EntrustSystem`, `ConfigSystem.Instance.CreateMaterial(...)`, and extensions like `GetOrAddComponent`.
-- A **deprecated** legacy render-sorting method in `GridItemComponent` references `GuildGridModel`.
-
-If your project does not have these frameworks, remove/replace those editor-related references during integration, or use only the runtime core.
+- The editor's auto-generation pipeline takes grid data text exported from `Aseprite` as input (see [Aseprite asset pipeline](#aseprite-asset-pipeline)).
+- The shader used for generated display meshes is configurable via `GridSystemConfig.viewMaterialShaderName` (default `Able/Lit-Alpha`); if that shader is not found in the project, it automatically falls back to the built-in `Sprites/Default`.
 
 ## 🧩 Core Concepts
 - **Grid & layers**: The whole grid is managed by `GridCellSystemManager`, internally a set of layers — each layer is an `X × Y × Z` 3D cell array. `Init(...)` specifies the cell world size, per-axis counts, and layer count.
@@ -103,7 +117,7 @@ If your project does not have these frameworks, remove/replace those editor-rela
 The example below uses `GridCellSystemManager` directly to manage grid data:
 
 ```csharp
-using FsGridCellSystem;
+using AleGridCellSystem;
 using UnityEngine;
 
 // 1. Create and initialize a grid: cell world size 1×1×1, grid 20×20×10, 1 layer
@@ -249,7 +263,7 @@ The system has built-in conversion between grid, world, and **2.5D display** coo
 > In the 2.5D projection, an object's **height is added onto the display Y axis**, while its depth coordinate is converted into a **render depth**, so that objects that are "more in front / higher up" correctly occlude those behind. `GridCellSystemManager` also keeps a render-sorting queue based on this (`AddGridItemSortInfo`, etc., marked as the legacy approach).
 
 ## 🛠️ Editor Tooling
-The menu `Tools/FsGridCellSystem/GridItemToolsWindow` opens the **Grid Item Tools window**, used to **batch create / update** grid-item prefabs as well as **assembled-unit (PreformedUnit)** prefabs composed of multiple grid items.
+The menu `Tools/AleGridCellSystem/GridItemToolsWindow` opens the **Grid Item Tools window**, used to **batch create / update** grid-item prefabs as well as **assembled-unit (PreformedUnit)** prefabs composed of multiple grid items.
 
 ### Aseprite asset pipeline
 The tool sources its data from `Aseprite`: draw pixel grid assets in Aseprite and, via a companion Lua export script, export the grid configuration to a `.txt` data file. The tool parses that text (a header with the cell pixel size, then per-item size, position, real volumes, script tag, image list, etc.) and generates the following in Unity:

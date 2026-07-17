@@ -4,7 +4,7 @@ using UnityEditor;
 using System.IO;
 using System;
 
-namespace FsGridCellSystem
+namespace AleGridCellSystem
 {
     /// <summary>
     /// 网格物体工具窗口
@@ -48,7 +48,7 @@ namespace FsGridCellSystem
         //额外功能
         private static bool m_ExtraFoldout;
 
-        [MenuItem("Tools/FsGridCellSystem/GridItemToolsWindow")]
+        [MenuItem("Tools/AleGridCellSystem/GridItemToolsWindow")]
         public static void ShowWindow()
         {
             m_Window = EditorWindow.GetWindow(typeof(GridItemToolsWindow));
@@ -710,58 +710,6 @@ namespace FsGridCellSystem
                 childIndex++;
             }
         }
-
-        #region 临时代码 Mesh生成
-        [MenuItem("Tools/FsGridCellSystem/GenerateMesh")]
-        static void Init()
-        {
-            var location = -new Vector3(0.5f, 0.5f, 0.5f);
-            var mesh = new Mesh();
-            Vector3[] vertices = null;
-            int[] triangles = null;
-            Vector2[] uvs = null;
-            //顶点
-            vertices = new Vector3[6];
-            vertices[0] = new Vector3(0, 0, 0) + location;
-            vertices[1] = new Vector3(1, 0, 0) + location;
-            vertices[2] = new Vector3(0, 0, 1) + location;
-            vertices[3] = new Vector3(1, 0, 1) + location;
-            vertices[4] = new Vector3(0, 1, 1) + location;
-            vertices[5] = new Vector3(1, 1, 1) + location;
-            //三角面
-            triangles = new int[24];
-            triangles[0] = 1; triangles[1] = 2; triangles[2] = 0;
-            triangles[3] = 1; triangles[4] = 3; triangles[5] = 2;
-            triangles[6] = 3; triangles[7] = 4; triangles[8] = 2;
-            triangles[9] = 3; triangles[10] = 5; triangles[11] = 4;
-            triangles[12] = 0; triangles[13] = 4; triangles[14] = 5;
-            triangles[15] = 0; triangles[16] = 5; triangles[17] = 1;
-            triangles[18] = 0; triangles[19] = 2; triangles[20] = 4;
-            triangles[21] = 1; triangles[22] = 5; triangles[23] = 3;
-            //UV
-            uvs = new Vector2[6];
-            uvs[0] = new Vector2(0, 0);
-            uvs[1] = new Vector2(1, 0);
-            uvs[2] = new Vector2(0, 0.5f);
-            uvs[3] = new Vector2(1, 0.5f);
-            uvs[4] = new Vector2(0, 1);
-            uvs[5] = new Vector2(1, 1);
-            mesh.SetVertices(vertices);
-            mesh.triangles = triangles;
-            mesh.uv = uvs;
-            //法线方向
-            mesh.RecalculateNormals();
-
-            string folderPath = "Assets/ProductAssets";
-            //确认文件夹是否存在，否则创建
-            if (!Directory.Exists(folderPath))
-                Directory.CreateDirectory(folderPath);
-
-            //保存Mesh
-            AssetDatabase.CreateAsset(mesh, $"{folderPath}/Mesh_Slope.asset");
-            return;
-        }
-        #endregion
 
         //更新网格物品数据
         public bool GridItemUpdate(string keyName, GameObject GObj, bool updateGridItemMonoScript, bool updateGridItemComponent,

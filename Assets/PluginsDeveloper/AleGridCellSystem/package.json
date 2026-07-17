@@ -1,0 +1,22 @@
+{
+  "name": "com.alefeng.alegridcellsystem",
+  "version": "1.0.0",
+  "displayName": "AleGridCellSystem",
+  "description": "三维网格单元系统 —— 用于基于网格的建造、放置、定位、区域划分等玩法。A 3D grid cell system for Unity: grid-based building, placement, location and area partitioning.",
+  "unity": "2021.3",
+  "keywords": [
+    "grid",
+    "grid-cell",
+    "3d",
+    "building",
+    "placement",
+    "isometric"
+  ],
+  "author": {
+    "name": "AleFeng",
+    "url": "https://github.com/AleFeng"
+  },
+  "license": "GPL-2.0",
+  "documentationUrl": "https://github.com/AleFeng/AleGridCellSystem",
+  "changelogUrl": "https://github.com/AleFeng/AleGridCellSystem/blob/main/Assets/PluginsDeveloper/AleGridCellSystem/CHANGELOG.md"
+}

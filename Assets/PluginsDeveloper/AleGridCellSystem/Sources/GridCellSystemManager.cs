@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 网格单元系统
 /// </summary>
-namespace FsGridCellSystem
+namespace AleGridCellSystem
 {
     #region 网格项目 类型定义
     /// <summary>
@@ -138,7 +138,7 @@ namespace FsGridCellSystem
 
         public static GridCoordFloat operator /(GridCoordFloat a, GridCoord b)
         {
-            return new GridCoordFloat(a.X / b.X, a.Y / b.X, a.Z / b.Z);
+            return new GridCoordFloat(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
         }
 
         public static GridCoordFloat zero { get { return new GridCoordFloat(0, 0, 0); } }
@@ -151,7 +151,7 @@ namespace FsGridCellSystem
         {
             get
             {
-                return Mathf.Abs((float)Math.Sqrt(Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2)) + Math.Pow(Z, 2)));
+                return Mathf.Abs((float)Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2) + Math.Pow(Z, 2)));
             }
         }
 
@@ -268,7 +268,7 @@ namespace FsGridCellSystem
 
         public static GridCoordFloat operator /(GridCoord a, GridCoord b)
         {
-            return new GridCoordFloat(a.X * 1f / b.X, a.Y * 1f / b.X, a.Z * 1f / b.Z);
+            return new GridCoordFloat(a.X * 1f / b.X, a.Y * 1f / b.Y, a.Z * 1f / b.Z);
         }
 
         public static bool operator ==(GridCoord a, GridCoord b)
@@ -283,12 +283,19 @@ namespace FsGridCellSystem
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 31 + X;
+                hash = hash * 31 + Y;
+                hash = hash * 31 + Z;
+                return hash;
+            }
         }
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            return obj is GridCoord other && X == other.X && Y == other.Y && Z == other.Z;
         }
 
         /// <summary>
@@ -686,10 +693,12 @@ namespace FsGridCellSystem
                     {
                         BoundGridCoord = areaInfoCur.GridCoord;
                         BoundSize = areaInfoCur.Size;
-                        continue;
+                    }
+                    else
+                    {
+                        AddAreaGroupBound(areaInfoCur);
                     }
 
-                    AddAreaGroupBound(areaInfoCur);
                     index++;
                 }
             }
@@ -1671,7 +1680,7 @@ namespace FsGridCellSystem
         {
             for (int i = 0; i < m_ListLocationEmitter.Count; i++)
             {
-                var emitter = m_ListLocationReceiver[i];
+                var emitter = m_ListLocationEmitter[i];
                 receiver.CheckEmitterInRange(emitter);
             }
         }

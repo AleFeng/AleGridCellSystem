@@ -1,5 +1,4 @@
-﻿using EntrustSystem;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +6,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace FsGridCellSystem
+namespace AleGridCellSystem
 {
     public delegate bool CreatePrefabGameobjectProcessor(GameObject obj, string folderPath);
 
@@ -15,6 +14,8 @@ namespace FsGridCellSystem
     {
         public const string viewRootName = "ViewRoot";
         public const string colliderRootName = "ColliderRoot";
+        public const string viewMaterialShaderName = "Able/Lit-Alpha"; //显示网格默认着色器（Shader.Find 找不到时回退到内置着色器）
+        public const string viewMaterialShaderFallback = "Sprites/Default"; //回退着色器
         public const float pixelSizeToU3DSizeCoefficient = 0.01f;
         public const string gridItemToolsConfigName = "gridItemToolsConfig";
 
@@ -846,7 +847,7 @@ namespace FsGridCellSystem
 
             //生成MeshRenderer与Material
             var meshRender = root.GetOrAddComponent<MeshRenderer>();
-            var material = ConfigSystem.Instance.CreateMaterial("Able/Lit-Alpha");
+            var material = CreateMaterial(GridSystemConfig.viewMaterialShaderName);
             material.mainTexture = texture;
             meshRender.sharedMaterial = material;
 
@@ -865,6 +866,41 @@ namespace FsGridCellSystem
         #endregion
 
         #region 生成 碰撞器
+        private static Mesh s_SlopeMesh; //斜面碰撞用 Mesh 缓存
+
+        /// <summary>
+        /// 获取斜面碰撞用 Mesh
+        /// 按资源名检索，避免硬编码目录路径（插件目录改名后依旧可用）
+        /// </summary>
+        private static Mesh GetSlopeMesh()
+        {
+            if (s_SlopeMesh != null) return s_SlopeMesh;
+
+            var guids = AssetDatabase.FindAssets("Mesh_Slope t:Mesh");
+            if (guids != null && guids.Length > 0)
+                s_SlopeMesh = AssetDatabase.LoadAssetAtPath<Mesh>(AssetDatabase.GUIDToAssetPath(guids[0]));
+
+            if (s_SlopeMesh == null)
+                Debug.LogWarning("GridSystem : 未找到斜面碰撞用 Mesh（Mesh_Slope）。请确认插件的 Resource/Mesh_Slope.asset 是否存在。");
+
+            return s_SlopeMesh;
+        }
+
+        /// <summary>
+        /// 创建材质
+        /// 使用指定着色器，找不到时回退到内置着色器，避免依赖外部框架或缺失的自定义着色器
+        /// </summary>
+        private static Material CreateMaterial(string shaderName)
+        {
+            Shader shader = Shader.Find(shaderName);
+            if (shader == null)
+            {
+                shader = Shader.Find(GridSystemConfig.viewMaterialShaderFallback);
+                Debug.LogWarning($"GridSystem : 未找到着色器 \"{shaderName}\"，已回退到 \"{GridSystemConfig.viewMaterialShaderFallback}\"。可在 GridSystemConfig.viewMaterialShaderName 中修改。");
+            }
+            return new Material(shader);
+        }
+
         /// <summary>
         /// 创建网格物品碰撞器
         /// 这会创建一个碰撞器节点，并在此节点上添加Collider组件
@@ -951,7 +987,7 @@ namespace FsGridCellSystem
                                 //生成 MeshCollider
                                 var meshCollider = subColliderRoot.gameObject.AddComponent<MeshCollider>();
                                 meshCollider.convex = true;
-                                meshCollider.sharedMesh = AssetDatabase.LoadAssetAtPath<Mesh>("Assets/PluginsDeveloper/FsGridCellSystem/Resource/Mesh_Slope.asset");
+                                meshCollider.sharedMesh = GetSlopeMesh();
                                 subColliderRoot.localScale = size;
                                 subColliderRoot.localPosition = location;
                                 subColliderRoot.localRotation = Quaternion.Euler(imageData.imageRotate.x, imageData.imageRotate.z, imageData.imageRotate.y);
@@ -1519,6 +1555,22 @@ namespace FsGridCellSystem
             }
 
             return string.Empty;
+        }
+    }
+
+    /// <summary>
+    /// GameObject 扩展
+    /// </summary>
+    internal static class GridSystemGameObjectExtensions
+    {
+        /// <summary>
+        /// 获取组件，不存在则添加
+        /// </summary>
+        public static T GetOrAddComponent<T>(this GameObject go) where T : Component
+        {
+            var comp = go.GetComponent<T>();
+            if (comp == null) comp = go.AddComponent<T>();
+            return comp;
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-namespace FsGridCellSystem
+namespace AleGridCellSystem
 {
     /// <summary>
     /// 真实体积
@@ -587,27 +587,6 @@ namespace FsGridCellSystem
             }
         }
 
-        /// <summary>
-        /// 刷新 显示物体位置 ps:旧渲染排序 弃用
-        /// </summary>
-        /// <param name="cellCoord"></param>
-        public void RefreshViewObjPosition(GridCoord gridCoord)
-        {
-            if (m_ViewRootTrans == null) { return; }
-
-            var gridItemSize = GetGridItemSizeAtDirection;
-
-            //绕中心点旋转90度后 Z轴与Y轴对调 Z轴补正
-            //var posZAmendRotate = (gridItemSize.Z * GuildGridModel.Instance.CellUnitSizeZ - gridItemSize.Y * GuildGridModel.Instance.CellUnitSizeY) * 0.5f;
-
-            //Y轴 渲染深度 根据渲染物体的世界坐标计算
-            var posBottomCenter = GuildGridModel.Instance.GetGridItemSizeFrontCenterPos(gridCoord, gridItemSize);
-            var posViewRoot = GuildGridModel.Instance.GetWorldPosToViewPos(posBottomCenter);
-
-            //显示物体 世界坐标
-            m_ViewRootTrans.position = new Vector3(posViewRoot.x, posViewRoot.y, posViewRoot.z);
-        }
-
 #if UNITY_EDITOR
         /// <summary>
         /// 刷新 显示物体位置
@@ -643,7 +622,7 @@ namespace FsGridCellSystem
                 //添加或移除 定位发起者列表
                 if (m_GridCellSystemManager != null)
                 {
-                    if (m_EnableLocationReceiver)
+                    if (m_EnableLocationEmitter)
                     {
                         m_GridCellSystemManager.AddLocationEmitter(this);
                     }
